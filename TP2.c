@@ -48,9 +48,21 @@ int main(int argc, char **argv)
 	read_TP2_instance(fin,&data);
 	fclose(fin);
 
+	//Generate a random instance
+	generate_TP2_instance(&data, 10, 50, 40, 15, 15, 12);
+
+	fprintf(stderr,"%d,%d,%d\n",data.n,data.b,data.g);
+	fprintf(stderr,"------------------------\n");
+	for( int i = 0 ; i < data.n ; i++)
+		fprintf(stderr,"%d,%d,%d\n",data.c[i],data.a[i],data.f[i]);
+
+	fprintf(stderr,"\n\n");
 	//execute your solution methods on the instance you just read
 	//Exact solution
 	TP2_solve_exact(&data);
+
+	//Exact solution 1D
+	TP2_solve_exact_1D(&data);
 
 	return rval;
 }

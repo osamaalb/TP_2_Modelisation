@@ -4,7 +4,7 @@
    problemName="TP2"
    solutionName="incumbent"
    solutionIndex="-1"
-   objectiveValue="25"
+   objectiveValue="77"
    solutionTypeValue="3"
    solutionTypeString="primal"
    solutionStatusValue="101"
@@ -21,18 +21,21 @@
    maxIntInfeas="0"
    maxPrimalInfeas="0"
    maxX="1"
-   maxSlack="4"/>
+   maxSlack="9"/>
  <linearConstraints>
-  <constraint name="capacity_1" index="0" slack="3"/>
-  <constraint name="capacity_2" index="1" slack="4"/>
+  <constraint name="capacity_1" index="0" slack="0"/>
+  <constraint name="capacity_2" index="1" slack="9"/>
  </linearConstraints>
  <variables>
-  <variable name="x_j0" index="0" value="0"/>
-  <variable name="x_j1" index="1" value="0"/>
-  <variable name="x_j2" index="2" value="1"/>
-  <variable name="x_j3" index="3" value="1"/>
-  <variable name="x_j4" index="4" value="0"/>
-  <variable name="x_j5" index="5" value="1"/>
-  <variable name="x_j6" index="6" value="1"/>
+  <variable name="x_j1" index="0" value="1"/>
+  <variable name="x_j2" index="1" value="1"/>
+  <variable name="x_j3" index="2" value="-0"/>
+  <variable name="x_j4" index="3" value="1"/>
+  <variable name="x_j5" index="4" value="0"/>
+  <variable name="x_j6" index="5" value="1"/>
+  <variable name="x_j7" index="6" value="1"/>
+  <variable name="x_j8" index="7" value="0"/>
+  <variable name="x_j9" index="8" value="1"/>
+  <variable name="x_j10" index="9" value="1"/>
  </variables>
 </CPLEXSolution>
