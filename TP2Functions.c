@@ -54,7 +54,7 @@ int generate_TP2_instance(dataSet* dsptr, int n, int b, int g, int max_c, int ma
 	// initialiser les variables
 	dsptr->n = n;
 	dsptr->b = b;
-	dsptr->g = b;
+	dsptr->g = g;
 	dsptr->c = (int*)malloc(sizeof(int)*n);
 	dsptr->a = (int*)malloc(sizeof(int)*n);
 	dsptr->f = (int*)malloc(sizeof(int)*n);
@@ -440,4 +440,85 @@ int TP2_solve_exact_1D(dataSet* dsptr)
 	double tolerance = 0.0001;
 
 	return rval;
+}
+
+dataSet TP2_solve_Pk(dataSet* d, double l, double* z_k, double* x_k) {
+	// copier le dataset avec un seul modification c[j] devient c[j] - (l * f[j])
+	dataSet d_k;
+	d_k.n = d->n;
+	d_k.b = d->b;
+	d_k.c = (int*)malloc(sizeof(int)*d->n);
+	d_k.a = (int*)malloc(sizeof(int)*d->n);
+
+	for (int i = 0; i < d->n; i++) {
+		d_k.c[i] = d->c[i] - (l * d->f[i]);
+		d_k.a[i] = d->a[i];
+	}
+
+	TP2_solve_exact_1D(&d_k);
+
+	d_k.master.objval += (l * d->g);
+
+	return d_k;
+}
+
+double max(double a, double b) {
+	if (a > b) {
+		return a;
+	}
+	return b;
+}
+
+int TP2_relax_lagr(dataSet* d, float tolerance) {
+	double* x_ = (double*)malloc(sizeof(double)*d->n);
+	for(int i = 0; i < d->n; i++) {
+		x_[i] = 0;
+	}
+
+	double z_ = LONG_LONG_MAX;
+
+	int k = 0;
+
+	// pas
+	double p = 1; // on a choisit la mis à jour de pas : p = p / 2
+
+	// lambda
+	double l = 0;
+
+	double z_k;
+
+	while (p > tolerance || (z_ - z_k) > tolerance) {
+		// résoudre le problem Pk
+		dataSet d_k = TP2_solve_Pk();
+		z_k = d_k.master.objval;
+		
+		// le volume utilisé par la solution de Pk pour la contarainte 2
+		int used_vol_2 = 0;
+		for (int i = 0; i < d_k.n; i++) {
+			if (d_k.master.x[i] == 1) {
+				used_vol_2 += d_k.f[i]
+			}
+		}
+
+		if (used_vol_2 <= d->g && z_k > z_) {
+			for (int i = 0; i < d->n; i++) {
+				x_[i] = d_k.master.x[i];
+			}
+		}
+
+		if (z_k < z_) {
+			z_ = z_k;
+		}
+
+		double gamma = d->g - used_vol_2;
+
+		l = max(0, l - p*gamma);
+
+		k++;
+		p = p / 2;
+	}
+
+	fprintf(stderr,"z_ relax. lagrangienne = %f", z_);
+
+	return 0;
 }

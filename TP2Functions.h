@@ -77,5 +77,6 @@ int read_TP2_instance(FILE*fin,dataSet* dsptr);
 int generate_TP2_instance(dataSet* dsptr, int n, int b, int g, int max_c, int max_a, int max_f);
 int TP2_solve_exact(dataSet* dsptr);
 int TP2_solve_exact_1D(dataSet* dsptr);
+int TP2_relax_lagr(dataSet* d, float tolerance);
 
 
