@@ -442,7 +442,7 @@ int TP2_solve_exact_1D(dataSet* dsptr)
 	return rval;
 }
 
-dataSet TP2_solve_Pk(dataSet* d, double l, double* z_k, double* x_k) {
+dataSet TP2_solve_Pk(dataSet* d, double l) {
 	// copier le dataset avec un seul modification c[j] devient c[j] - (l * f[j])
 	dataSet d_k;
 	d_k.n = d->n;
@@ -475,35 +475,38 @@ int TP2_relax_lagr(dataSet* d, float tolerance) {
 		x_[i] = 0;
 	}
 
-	double z_ = LONG_LONG_MAX;
+	double z_ = INT_MAX;
+
+	double z_x_ = 0;
 
 	int k = 0;
 
 	// pas
-	double p = 1; // on a choisit la mis à jour de pas : p = p / 2
+	double p = 1; // on a choisit la mis à jour de pas : p = p / 4
 
 	// lambda
 	double l = 0;
 
-	double z_k;
+	double z_k = 0;
 
 	while (p > tolerance || (z_ - z_k) > tolerance) {
 		// résoudre le problem Pk
-		dataSet d_k = TP2_solve_Pk();
+		dataSet d_k = TP2_solve_Pk(d, l);
 		z_k = d_k.master.objval;
 		
 		// le volume utilisé par la solution de Pk pour la contarainte 2
 		int used_vol_2 = 0;
 		for (int i = 0; i < d_k.n; i++) {
 			if (d_k.master.x[i] == 1) {
-				used_vol_2 += d_k.f[i]
+				used_vol_2 += d->f[i];
 			}
 		}
 
-		if (used_vol_2 <= d->g && z_k > z_) {
+		if (used_vol_2 <= d->g && z_k > z_x_) {
 			for (int i = 0; i < d->n; i++) {
 				x_[i] = d_k.master.x[i];
 			}
+			z_x_ = z_k;
 		}
 
 		if (z_k < z_) {
@@ -515,10 +518,10 @@ int TP2_relax_lagr(dataSet* d, float tolerance) {
 		l = max(0, l - p*gamma);
 
 		k++;
-		p = p / 2;
+		p = p / 4;
 	}
 
-	fprintf(stderr,"z_ relax. lagrangienne = %f", z_);
+	fprintf(stderr,"z_ relax. lagrangienne = %f\n", z_);
 
 	return 0;
 }

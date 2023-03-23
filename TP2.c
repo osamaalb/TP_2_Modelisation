@@ -64,6 +64,9 @@ int main(int argc, char **argv)
 	//Exact solution 1D
 	TP2_solve_exact_1D(&data);
 
+	// Solve with relaxation lagrangienne
+	TP2_relax_lagr(&data, 0.01);
+
 	return rval;
 }
 
